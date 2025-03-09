@@ -4,7 +4,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    DB_URL: str
+    BASE_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    DB_URL: str = f"sqlite+aiosqlite:///{BASE_DIR}/data/db.sqlite3"
 
     API_HOST: str
     API_PORT: int

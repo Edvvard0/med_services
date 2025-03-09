@@ -11,6 +11,8 @@ class Doctor(Base):
 
 
 class InsuranceCompanies(Base):
+    __tablename__ = "insurance_companies"
+
     name: Mapped[str]
 
 

@@ -2,8 +2,8 @@ from fastapi import APIRouter, UploadFile
 from starlette.responses import FileResponse, StreamingResponse
 
 from app.database import SessionDep
-from app.patients.dao import PatientDAO
-from app.patients.schemas import SPatient
+from app.patients.dao import PatientDAO, MedCardDAO
+from app.patients.schemas import SPatientAdd, SMedCardAdd
 from app.patients.utils import recognize_qr_code, generate_qr_code
 
 router = APIRouter(
@@ -13,15 +13,22 @@ router = APIRouter(
 
 
 @router.get("/{patient_id}")
-async def get_patient(patient_id: int, session: SessionDep) -> SPatient:
-    patient = PatientDAO.find_one_or_none_by_id(session=session, model_id=patient_id)
+async def get_patient(patient_id: int, session: SessionDep) -> SPatientAdd:
+    patient = await PatientDAO.find_one_or_none_by_id(session=session, model_id=patient_id)
+    print(patient)
     return patient
 
 
 @router.post("/")
-async def add_patient(data_patient: SPatient, session: SessionDep):
+async def add_patient(data_patient: SPatientAdd, session: SessionDep):
     await PatientDAO.add(session, **data_patient.model_dump())
     return {"message": "Пользователь успешно добавлен"}
+
+
+@router.post("/med_card")
+async def add_med_card(med_card: SMedCardAdd, session: SessionDep):
+    await MedCardDAO.add(session, **med_card.model_dump())
+    return {"message": "Meд карта успешно создана"}
 
 
 @router.get("/qr_code/{patient_id}")

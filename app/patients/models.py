@@ -2,7 +2,7 @@ import uuid
 from datetime import date, datetime
 from enum import Enum
 
-from sqlalchemy import text
+from sqlalchemy import text, Integer, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import ENUM as PgEnum, types
 
@@ -17,7 +17,7 @@ class CorrectGender(Enum):
 class Patient(Base):
     first_name: Mapped[str] = mapped_column(nullable=False)
     last_name: Mapped[str] = mapped_column(nullable=False)
-    middle_name: Mapped[str] = mapped_column(nullable=False)
+    middle_name: Mapped[str] = mapped_column(nullable=True)
     date_birthday: Mapped[date] = mapped_column(nullable=False)
 
     passport: Mapped[str] = mapped_column(nullable=False)
@@ -29,16 +29,17 @@ class Patient(Base):
     address: Mapped[str] = mapped_column(nullable=False)
     phone_number: Mapped[str] = mapped_column(nullable=False)
     email: Mapped[str] = mapped_column(nullable=False)
+    insurance_company: Mapped[str]
+
+    # insurance_company_id: Mapped[int] = mapped_column(Integer, ForeignKey("insurance_companies.id"))
 
 
 class MedCard(Base):
     id: Mapped[uuid.UUID] = mapped_column(
-        types.Uuid,
         primary_key=True,
-        init=False,
-        server_default=text("gen_random_uuid()")
+        default=uuid.uuid4,
     )
-    patient_id: Mapped[str] = mapped_column()
+    patient_id: Mapped[int] = mapped_column(Integer, ForeignKey("patients.id"))
     photo_url: Mapped[str]
     date_issue: Mapped[date]
     date_last_request: Mapped[datetime]
