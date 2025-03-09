@@ -4,7 +4,7 @@ from starlette.responses import FileResponse, StreamingResponse
 from app.database import SessionDep
 from app.patients.dao import PatientDAO, MedCardDAO
 from app.patients.schemas import SPatientAdd, SMedCardAdd
-from app.patients.utils import recognize_qr_code, generate_qr_code
+from app.patients.utils import recognize_qr_code, generate_qr_code, generate_consent, generate_contract
 
 router = APIRouter(
     prefix="/patients",
@@ -37,8 +37,35 @@ async def get_qr_code_patient(patient_id: int):
     return StreamingResponse(qr_buffer, media_type="image/jpeg")
 
 
-@router.post("/qr_code/")
+@router.post("/qr_code")
 async def recognition_qr_code_patient(uploaded_file: UploadFile):
     file_content = await uploaded_file.read()
     data = await recognize_qr_code(file_content)
     return {"data": data}
+
+
+@router.get("/consent/{patient_id}")
+async def consent(patient_id: int, session: SessionDep):
+    patient = await PatientDAO.find_one_or_none_by_id(session, model_id=patient_id)
+    # Генерируем документ и получаем путь к файлу
+    file_path = await generate_consent(patient)
+
+    # Возвращаем файл с правильным media_type
+    return FileResponse(
+        path=file_path,
+        filename="Согласие_на_обработку_данных.docx",
+        media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    )
+
+
+@router.get("/contract/{patient_id}")
+async def contract(patient_id: int, session: SessionDep):
+    patient = await PatientDAO.find_one_or_none_by_id(session, model_id=patient_id)
+
+    file_path = await generate_contract(patient)
+
+    return FileResponse(
+        path=file_path,
+        filename="Договор.docx",
+        media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    )

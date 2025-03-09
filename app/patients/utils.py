@@ -1,9 +1,16 @@
+import asyncio
+from datetime import datetime
+import os
 from io import BytesIO
 
 import cv2
+import pytz as pytz
 import qrcode
 import numpy as np
+from docxtpl import DocxTemplate
 from fastapi import HTTPException
+
+from app.patients.schemas import SPatientAdd
 
 
 async def generate_qr_code(data: str) -> BytesIO:
@@ -35,3 +42,37 @@ async def recognize_qr_code(file_content: bytes) -> str:
     if not data:
         raise HTTPException(status_code=400, detail="QR code not found or invalid")
     return data
+
+
+async def generate_consent(patient: SPatientAdd):
+    template_path = os.path.join("data", "consent.docx")
+    output_path = os.path.join("data", "consent2.docx")
+
+    doc = DocxTemplate(template_path)
+    context = {
+        'fio': f"{patient.last_name} {patient.first_name} {patient.middle_name or ''}".strip(),
+        "passport": patient.passport,
+        "date": datetime.now(pytz.timezone('Europe/Moscow')).strftime("%d.%m.%Y"),
+        "address": patient.address
+    }
+    doc.render(context)
+    doc.save(output_path)
+    return output_path
+
+
+async def generate_contract(patient: SPatientAdd):
+    template_path = os.path.join("data", "contract.docx")
+    output_path = os.path.join("data", "contract2.docx")
+
+    doc = DocxTemplate(template_path)
+    context = {
+        'fio': f"{patient.last_name} {patient.first_name} {patient.middle_name or ''}".strip(),
+        "passport": patient.passport,
+        "date": datetime.now(pytz.timezone('Europe/Moscow')).strftime("%d.%m.%Y"),
+        "address": patient.address,
+        "phone": patient.phone_number,
+        "email": patient.email
+    }
+    doc.render(context)
+    doc.save(output_path)
+    return output_path
