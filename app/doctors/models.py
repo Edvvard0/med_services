@@ -8,3 +8,6 @@ class Doctor(Base):
     last_name: Mapped[str] = mapped_column(nullable=False)
     middle_name: Mapped[str] = mapped_column(nullable=False)
     specialty: Mapped[str]
+
+    email: Mapped[str]
+    password: Mapped[str]
