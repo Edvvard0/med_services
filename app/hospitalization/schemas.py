@@ -4,7 +4,6 @@ from pydantic import BaseModel
 
 
 class SHospitalization(BaseModel):
-    diagnosis: str
     patient_id: int
     doctor_id: int
 

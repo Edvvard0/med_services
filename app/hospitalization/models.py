@@ -12,7 +12,7 @@ class Hospitalization(Base):
         primary_key=True,
         default=uuid.uuid4,
     )  # это и будет индивидуальный код госпитализации, его вводить не надо
-    diagnosis: Mapped[str]
+
     patient_id: Mapped[int] = mapped_column(Integer,  ForeignKey("patients.id"))
     doctor_id: Mapped[int] = mapped_column(Integer,  ForeignKey("doctors.id"))
 
