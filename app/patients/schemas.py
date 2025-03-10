@@ -28,3 +28,31 @@ class SPatientAdd(BaseModel):
     disease_history: str
 
     insurance_company: str
+    password: str
+
+
+class SPatien(BaseModel):
+    first_name: str
+    last_name: str
+    middle_name: str
+    date_birthday: date
+    gender: CorrectGender
+    address: str
+    phone_number: str
+    email: EmailStr
+
+    date_issue: date
+    date_last_request: datetime
+    date_next_visit: datetime
+    number_insurance_policy: str
+    date_expiration: date
+    diagnosis: str
+    disease_history: str
+
+    insurance_company: str
+    password: str
+
+
+class SPatientAuth(BaseModel):
+    email: EmailStr
+    password: str

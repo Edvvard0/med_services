@@ -45,6 +45,8 @@ class Patient(Base):
 
     insurance_company: Mapped[str]
 
+    password: Mapped[str]
+
     # insurance_company_id: Mapped[int] = mapped_column(Integer, ForeignKey("insurance_companies.id"))
 
 
