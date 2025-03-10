@@ -29,13 +29,8 @@ class Patient(Base):
     address: Mapped[str] = mapped_column(nullable=False)
     phone_number: Mapped[str] = mapped_column(nullable=False)
     email: Mapped[str] = mapped_column(nullable=False)
-    insurance_company: Mapped[str]
 
-    # insurance_company_id: Mapped[int] = mapped_column(Integer, ForeignKey("insurance_companies.id"))
-
-
-class MedCard(Base):
-    id: Mapped[uuid.UUID] = mapped_column(
+    med_card_id: Mapped[uuid.UUID] = mapped_column(
         primary_key=True,
         default=uuid.uuid4,
     )
@@ -48,6 +43,10 @@ class MedCard(Base):
     date_expiration: Mapped[date]
     diagnosis: Mapped[str]
     disease_history: Mapped[str]
+
+    insurance_company: Mapped[str]
+
+    # insurance_company_id: Mapped[int] = mapped_column(Integer, ForeignKey("insurance_companies.id"))
 
 
 class InsuranceCompanies(Base):

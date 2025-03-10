@@ -45,7 +45,7 @@ SessionDep = Annotated[AsyncSession, Depends(get_session)]
 class Base(AsyncAttrs, DeclarativeBase):
     __abstract__ = True
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
 
     @classmethod
     @property
