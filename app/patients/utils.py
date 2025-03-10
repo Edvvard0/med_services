@@ -61,8 +61,8 @@ async def generate_consent(patient: SPatientAdd):
 
 
 async def generate_contract(patient: SPatientAdd):
-    template_path = os.path.join("data", "contract.docx")
-    output_path = os.path.join("data", "contract2.docx")
+    template_path = os.path.join("data/document", "contract.docx")
+    output_path = os.path.join("data/document", "contract2.docx")
 
     doc = DocxTemplate(template_path)
     context = {

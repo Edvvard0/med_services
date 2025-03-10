@@ -15,6 +15,7 @@ class CorrectGender(Enum):
 
 
 class Patient(Base):
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     first_name: Mapped[str] = mapped_column(nullable=False)
     last_name: Mapped[str] = mapped_column(nullable=False)
     middle_name: Mapped[str] = mapped_column(nullable=True)
@@ -31,10 +32,8 @@ class Patient(Base):
     email: Mapped[str] = mapped_column(nullable=False)
 
     med_card_id: Mapped[uuid.UUID] = mapped_column(
-        primary_key=True,
         default=uuid.uuid4,
     )
-    patient_id: Mapped[int] = mapped_column(Integer, ForeignKey("patients.id"))
     photo_url: Mapped[str]
     date_issue: Mapped[date]
     date_last_request: Mapped[datetime]

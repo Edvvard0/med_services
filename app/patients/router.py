@@ -3,7 +3,7 @@ from starlette.responses import FileResponse, StreamingResponse
 
 from app.database import SessionDep
 from app.patients.dao import PatientDAO
-from app.patients.schemas import SPatientAdd, SMedCardAdd
+from app.patients.schemas import SPatientAdd
 from app.patients.utils import recognize_qr_code, generate_qr_code, generate_consent, generate_contract
 
 router = APIRouter(
