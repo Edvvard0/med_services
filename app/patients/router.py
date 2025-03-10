@@ -31,6 +31,15 @@ async def add_med_card(med_card: SMedCardAdd, session: SessionDep):
     return {"message": "Meд карта успешно создана"}
 
 
+@router.post("/upload_photo")
+async def upload_photo(uploaded_file: UploadFile):
+    '''  Добавить сохранение в s3 хранилище'''
+    # file = uploaded_file.file
+    # file_name = "data/photo.jpg"
+    # with open(file_name, "wb") as f:
+    #     f.write(file.read())
+
+
 @router.get("/qr_code/{patient_id}")
 async def get_qr_code_patient(patient_id: int):
     qr_buffer = await generate_qr_code(str(patient_id))
@@ -47,10 +56,8 @@ async def recognition_qr_code_patient(uploaded_file: UploadFile):
 @router.get("/consent/{patient_id}")
 async def consent(patient_id: int, session: SessionDep):
     patient = await PatientDAO.find_one_or_none_by_id(session, model_id=patient_id)
-    # Генерируем документ и получаем путь к файлу
     file_path = await generate_consent(patient)
 
-    # Возвращаем файл с правильным media_type
     return FileResponse(
         path=file_path,
         filename="Согласие_на_обработку_данных.docx",
