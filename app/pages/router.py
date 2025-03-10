@@ -13,3 +13,10 @@ template = Jinja2Templates(directory='app/templates')
 async def info_page(request: Request) -> HTMLResponse:
     return template.TemplateResponse(name='index.html',
                                      context={'request': request})
+
+
+@router.get("/login")
+async def login_page(request: Request) -> HTMLResponse:
+    return template.TemplateResponse(name='index.html',
+                                     context={'request': request,
+                                              'role': 'patient'})

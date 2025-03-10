@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}
+Вход в систему
+{% endblock %}
+
+{% block head %}
+<style>
+    .login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 70vh; /* Высота для центрирования по вертикали */
+    }
+    .login-form {
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+    }
+    .login-form input {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #007bff;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+    .login-form button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 20px;
+    }
+    .login-form button:hover {
+        background-color: #0056b3; /* Темнее при наведении */
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <form class="login-form" id="loginForm">
+        <h2>Вход в систему</h2>
+        <input type="email" name="email" placeholder="Почта" required>
+        <input type="password" name="password" placeholder="Пароль" required>
+        <button type="submit">Войти</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async function(event) {
+        event.preventDefault(); // Предотвращаем стандартную отправку формы
+
+        const email = document.querySelector('input[name="email"]').value;
+        const password = document.querySelector('input[name="password"]').value;
+        const role = "{{ role }}"; // Значение role передаётся через Jinja2
+
+        let authUrl;
+        let redirectUrl;
+
+        // Определяем URL для авторизации и перенаправления в зависимости от роли
+        if (role === 'patient') {
+            authUrl = '/patients/auth';
+            redirectUrl = '/pages/patients/main';
+        } else if (role === 'doctor') {
+            authUrl = '/doctors/auth';
+            redirectUrl = '/pages/doctors/main';
+        } else {
+            alert('Неверная роль пользователя');
+            return;
+        }
+
+        try {
+            // Отправляем POST-запрос с данными
+            const response = await fetch(authUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+
+            if (response.ok) {
+                // Если запрос успешен, перенаправляем
+                window.location.href = redirectUrl;
+            } else {
+                // Обрабатываем ошибку (например, неверные данные)
+                const errorData = await response.json();
+                alert('Ошибка входа: ' + (errorData.message || 'Неверные данные'));
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+            alert('Произошла ошибка при входе');
+        }
+    });
+</script>
+{% endblock %}
