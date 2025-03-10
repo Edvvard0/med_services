@@ -1,3 +1,5 @@
+import uuid
+
 from fastapi import APIRouter
 
 from app.database import SessionDep
@@ -23,6 +25,6 @@ async def add_hospitalization(session: SessionDep, hosp: SHospitalization):
 
 
 @router.get("/{hosp_id}")
-async def get_current_hosp(hosp_id: int, session: SessionDep) -> SHospitalization | None:
-    hosp = await HospitalizationDAO.find_one_or_none_by_id(session, model_id=hosp_id)
+async def get_current_hosp(hosp_id: uuid.UUID, session: SessionDep) -> SHospitalization | None:
+    hosp = await HospitalizationDAO.find_one_or_none_by_id(session, hosp_id=hosp_id)
     return hosp
