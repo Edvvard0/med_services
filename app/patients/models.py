@@ -49,3 +49,8 @@ class MedCard(Base):
     diagnosis: Mapped[str]
     disease_history: Mapped[str]
 
+
+class InsuranceCompanies(Base):
+    __tablename__ = "insurance_companies"
+
+    name: Mapped[str]
