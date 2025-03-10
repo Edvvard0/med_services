@@ -2,7 +2,7 @@ from fastapi import APIRouter, UploadFile
 from starlette.responses import FileResponse, StreamingResponse
 
 from app.database import SessionDep
-from app.patients.dao import PatientDAO, MedCardDAO
+from app.patients.dao import PatientDAO
 from app.patients.schemas import SPatientAdd, SMedCardAdd
 from app.patients.utils import recognize_qr_code, generate_qr_code, generate_consent, generate_contract
 
@@ -23,12 +23,6 @@ async def get_patient(patient_id: int, session: SessionDep) -> SPatientAdd:
 async def add_patient(data_patient: SPatientAdd, session: SessionDep):
     await PatientDAO.add(session, **data_patient.model_dump())
     return {"message": "Пользователь успешно добавлен"}
-
-
-@router.post("/med_card")
-async def add_med_card(med_card: SMedCardAdd, session: SessionDep):
-    await MedCardDAO.add(session, **med_card.model_dump())
-    return {"message": "Meд карта успешно создана"}
 
 
 @router.post("/upload_photo")
