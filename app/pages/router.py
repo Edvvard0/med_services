@@ -16,7 +16,7 @@ async def info_page(request: Request) -> HTMLResponse:
 
 
 @router.get("/login")
-async def login_page(request: Request) -> HTMLResponse:
-    return template.TemplateResponse(name='index.html',
+async def login_patient_page(request: Request) -> HTMLResponse:
+    return template.TemplateResponse(name='login.html',
                                      context={'request': request,
                                               'role': 'patient'})
