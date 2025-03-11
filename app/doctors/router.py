@@ -1,10 +1,12 @@
 from fastapi import APIRouter, HTTPException
 from starlette import status
+from starlette.responses import Response
 
 from app.database import SessionDep, async_session_maker
-from app.doctors.auth import get_password_hash
+from app.doctors.auth import get_password_hash, authenticate_user, create_access_token
 from app.doctors.dao import DoctorDAO
-from app.doctors.schemas import SDoctor, SDoctorAdd
+from app.doctors.schemas import SDoctor, SDoctorAdd, SDoctorAuth
+from app.exception import IncorrectEmailOrPasswordException
 
 router = APIRouter(
     prefix="/doctors",
@@ -33,6 +35,16 @@ async def add_doctors(session: SessionDep, data_doctor: SDoctorAdd):
     async with async_session_maker() as session:
         await DoctorDAO.add(session, **data_doctor.model_dump())
     return {"message": "Доктор успешно зарегистрирован"}
+
+
+@router.post('/login')
+async def login_doctor(response: Response, doctor_data: SDoctorAuth, session: SessionDep):
+    patient = await authenticate_user(doctor_data.email, doctor_data.password, session)
+    if not patient:
+        raise IncorrectEmailOrPasswordException
+    access_token = create_access_token({'sub': str(patient.id)})
+    response.set_cookie("access_token_doc", access_token, httponly=True)
+    return access_token
 
 
 @router.get("/{doctor_id}")

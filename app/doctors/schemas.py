@@ -12,3 +12,8 @@ class SDoctor(BaseModel):
 
 class SDoctorAdd(SDoctor):
     password: str
+
+
+class SDoctorAuth(BaseModel):
+    email: EmailStr
+    password: str
