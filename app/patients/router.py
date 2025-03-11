@@ -26,6 +26,12 @@ async def add_patient(data_patient: SPatientAdd, session: SessionDep):
     return {"message": "Пользователь успешно добавлен"}
 
 
+@router.get("/")
+async def all_patients(session: SessionDep) -> list[SPatien]:
+    patients = await PatientDAO.find_all(session)
+    return patients
+
+
 @router.post('/login')
 async def login_user(response: Response, patient_data: SPatientAuth, session: SessionDep):
     patient = await authenticate_user(patient_data.email, patient_data.password, session)

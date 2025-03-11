@@ -24,12 +24,9 @@ async function loginFunction(event) {
         }
 
         const result = await response.json();
+// Проверяем наличие сообщения о успешной регистрации
+        window.location.href = '/pages/patients/profile';  // Перенаправляем пользователя на страницу логина
 
-//        if (result.message) {  // Проверяем наличие сообщения о успешной регистрации
-//            window.location.href = '/pages/profile';  // Перенаправляем пользователя на страницу логина
-//        } else {
-//            alert(result.message || 'Неизвестная ошибка');
-//        }
     } catch (error) {
         console.error('Ошибка:', error);
         alert('Произошла ошибка при входе. Пожалуйста, попробуйте снова.', error);

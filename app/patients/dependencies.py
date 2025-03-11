@@ -12,11 +12,9 @@ from app.patients.models import Patient
 
 
 def get_token(request: Request):
-    print("before")
     token = request.cookies.get('access_token')
     if not token:
         raise NoTokenException
-    print(token)
     return token
 
 
