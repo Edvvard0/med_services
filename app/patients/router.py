@@ -1,9 +1,10 @@
-from fastapi import APIRouter, UploadFile, Depends
+from fastapi import APIRouter, UploadFile, Depends, HTTPException
 
 from pydantic import EmailStr
+from starlette import status
 from starlette.responses import FileResponse, StreamingResponse, Response
 
-from app.database import SessionDep
+from app.database import SessionDep, get_session, async_session_maker
 from app.exception import UserAlreadyExistsException, IncorrectEmailOrPasswordException
 from app.patients.auth import get_password_hash, authenticate_user, create_access_token
 from app.patients.dao import PatientDAO
@@ -19,10 +20,18 @@ router = APIRouter(
 
 @router.post("/")
 async def add_patient(data_patient: SPatientAdd, session: SessionDep):
+    user = await PatientDAO.find_one_or_none(session=session, email=data_patient.email)
+    if user:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail='Пользователь уже существует'
+        )
+
     hashed_password = get_password_hash(data_patient.password)
     data_patient.password = hashed_password
 
-    await PatientDAO.add(session, **data_patient.model_dump())
+    async with async_session_maker() as session:
+        await PatientDAO.add(session, **data_patient.model_dump())
     return {"message": "Пользователь успешно добавлен"}
 
 

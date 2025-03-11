@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 class SDoctor(BaseModel):
@@ -6,3 +6,9 @@ class SDoctor(BaseModel):
     last_name: str
     middle_name: str
     specialty: str
+
+    email: EmailStr
+
+
+class SDoctorAdd(SDoctor):
+    password: str

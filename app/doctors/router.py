@@ -1,8 +1,10 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
+from starlette import status
 
-from app.database import SessionDep
+from app.database import SessionDep, async_session_maker
+from app.doctors.auth import get_password_hash
 from app.doctors.dao import DoctorDAO
-from app.doctors.schemas import SDoctor
+from app.doctors.schemas import SDoctor, SDoctorAdd
 
 router = APIRouter(
     prefix="/doctors",
@@ -17,8 +19,19 @@ async def get_all_doctors(session: SessionDep) -> list[SDoctor]:
 
 
 @router.post("/")
-async def add_doctors(session: SessionDep, doctor: SDoctor):
-    await DoctorDAO.add(session, **doctor.model_dump())
+async def add_doctors(session: SessionDep, data_doctor: SDoctorAdd):
+    doctor = await DoctorDAO.find_one_or_none(session=session, email=data_doctor.email)
+    if doctor:
+        raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail='Пользователь уже существует'
+                )
+
+    hashed_password = get_password_hash(data_doctor.password)
+    data_doctor.password = hashed_password
+
+    async with async_session_maker() as session:
+        await DoctorDAO.add(session, **data_doctor.model_dump())
     return {"message": "Доктор успешно зарегистрирован"}
 
 
