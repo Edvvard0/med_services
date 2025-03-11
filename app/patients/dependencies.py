@@ -4,6 +4,7 @@ from fastapi import Request, HTTPException, status, Depends
 from jose import jwt, JWTError
 
 from app.config import settings
+from app.database import SessionDep
 from app.exception import IncorrectFormatTokenException, TokenExpireException, NoPermissionsException, \
     UserIsNotPresentException, NoTokenException
 from app.patients.dao import PatientDAO
@@ -11,17 +12,19 @@ from app.patients.models import Patient
 
 
 def get_token(request: Request):
+    print("before")
     token = request.cookies.get('access_token')
     if not token:
         raise NoTokenException
+    print(token)
     return token
 
 
-async def get_current_user(token: str = Depends(get_token)):
+async def get_current_user(session: SessionDep, token: str = Depends(get_token)):
     try:
         payload = jwt.decode(
         token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-    except JWTError as e:
+    except JWTError:
         raise IncorrectFormatTokenException
 
     expire: str = payload.get('exp')
@@ -32,7 +35,7 @@ async def get_current_user(token: str = Depends(get_token)):
     if not user_id:
         raise UserIsNotPresentException
 
-    user = await PatientDAO.find_one_or_none_by_id(int(user_id))
+    user = await PatientDAO.find_one_or_none_by_id(session, int(user_id))
     if not user:
         raise UserIsNotPresentException
 

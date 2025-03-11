@@ -32,6 +32,7 @@ class SPatientAdd(BaseModel):
 
 
 class SPatien(BaseModel):
+    id: int
     first_name: str
     last_name: str
     middle_name: str
@@ -50,7 +51,6 @@ class SPatien(BaseModel):
     disease_history: str
 
     insurance_company: str
-    password: str
 
 
 class SPatientAuth(BaseModel):

@@ -36,7 +36,6 @@ class BaseDAO:
         #     msg += " Exp: Cannot add"
         #     logger.error(msg, extra=values, exc_info=True)
 
-
         async with session.begin():
             new_instance = cls.model(**values)
             session.add(new_instance)
