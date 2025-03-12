@@ -6,7 +6,7 @@ from sqlalchemy.orm import selectinload
 from app.database import SessionDep
 from app.hospitalization.dao import HospitalizationDAO
 from app.hospitalization.models import Hospitalization
-from app.hospitalization.schemas import SHospitalization
+from app.hospitalization.schemas import SHospitalization, SHospitalizationFull
 
 router = APIRouter(
     prefix="/hospitalizations",
@@ -26,12 +26,21 @@ async def add_hospitalization(session: SessionDep, hosp: SHospitalization):
     return {"message": "Госпитализация успешно добавлена"}
 
 
+@router.get("/patients")
+async def get_lst_hosp_full_info(session: SessionDep) -> list[SHospitalizationFull]:
+    rez = await HospitalizationDAO.find_all_hosp(session,
+                                                 options=[selectinload(Hospitalization.patients),
+                                                          selectinload(Hospitalization.doctors)])
+    return rez
+
+
 @router.get("/patients/{hosp_id}")
-async def get_patients_hosp(session: SessionDep, hosp_id: str):
+async def get_patients_hosp(session: SessionDep, hosp_id: str) -> SHospitalizationFull:
     hosp_id = uuid.UUID(hosp_id)
     rez = await HospitalizationDAO.find_patient_by_hosp_id(session=session,
                                                            hosp_id=hosp_id,
-                                                           options=[selectinload(Hospitalization.patients)])
+                                                           options=[selectinload(Hospitalization.patients),
+                                                                    selectinload(Hospitalization.doctors)])
     return rez
 
 

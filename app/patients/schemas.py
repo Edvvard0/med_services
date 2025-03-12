@@ -31,7 +31,7 @@ class SPatientAdd(BaseModel):
     password: str
 
 
-class SPatien(BaseModel):
+class SPatient(BaseModel):
     id: int
     first_name: str
     last_name: str

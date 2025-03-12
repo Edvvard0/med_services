@@ -23,5 +23,13 @@ class HospitalizationDAO(BaseDAO):
             query = query.options(*options)
         rez = await session.execute(query)
         otv = rez.scalar_one_or_none()
-        print(otv)
+        return otv
+
+    @classmethod
+    async def find_all_hosp(cls, session: AsyncSession, options=None):
+        query = select(Hospitalization)
+        if options:
+            query = query.options(*options)
+        rez = await session.execute(query)
+        otv = rez.scalars().all()
         return otv

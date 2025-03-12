@@ -9,7 +9,7 @@ from app.exception import UserAlreadyExistsException, IncorrectEmailOrPasswordEx
 from app.patients.auth import get_password_hash, authenticate_user, create_access_token
 from app.patients.dao import PatientDAO
 from app.patients.dependencies import get_current_user
-from app.patients.schemas import SPatientAdd, SPatien, SPatientAuth
+from app.patients.schemas import SPatientAdd, SPatient, SPatientAuth
 from app.patients.utils import recognize_qr_code, generate_qr_code, generate_consent, generate_contract
 
 router = APIRouter(
@@ -36,7 +36,7 @@ async def add_patient(data_patient: SPatientAdd, session: SessionDep):
 
 
 @router.get("/")
-async def all_patients(session: SessionDep) -> list[SPatien]:
+async def all_patients(session: SessionDep) -> list[SPatient]:
     patients = await PatientDAO.find_all(session)
     return patients
 
@@ -52,7 +52,7 @@ async def login_user(response: Response, patient_data: SPatientAuth, session: Se
 
 
 @router.get("/me")
-async def get_me(patient=Depends(get_current_user)) -> SPatien:
+async def get_me(patient=Depends(get_current_user)) -> SPatient:
     return patient
 
 
@@ -104,6 +104,6 @@ async def contract(patient_id: int, session: SessionDep):
 
 
 @router.get("/{patient_id}")
-async def get_patient(patient_id: int, session: SessionDep) -> SPatien:
+async def get_patient(patient_id: int, session: SessionDep) -> SPatient:
     patient = await PatientDAO.find_one_or_none_by_id(session=session, model_id=patient_id)
     return patient

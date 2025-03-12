@@ -2,6 +2,9 @@ from datetime import date
 
 from pydantic import BaseModel
 
+from app.doctors.schemas import SDoctor
+from app.patients.schemas import SPatient
+
 
 class SHospitalization(BaseModel):
     patient_id: int
@@ -16,3 +19,8 @@ class SHospitalization(BaseModel):
     refusal_patient: bool
     refusal_doctor: bool
     cancel_reason: str
+
+
+class SHospitalizationFull(SHospitalization):
+    patients: SPatient
+    doctors: SDoctor
