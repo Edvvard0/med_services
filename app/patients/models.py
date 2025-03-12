@@ -47,10 +47,3 @@ class Patient(Base):
 
     password: Mapped[str]
 
-    # insurance_company_id: Mapped[int] = mapped_column(Integer, ForeignKey("insurance_companies.id"))
-
-
-class InsuranceCompanies(Base):
-    __tablename__ = "insurance_companies"
-
-    name: Mapped[str]
