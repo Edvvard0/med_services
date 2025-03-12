@@ -3,7 +3,7 @@ from datetime import date, datetime
 from enum import Enum
 
 from sqlalchemy import text, Integer, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import ENUM as PgEnum, types
 
 from app.database import Base
@@ -46,4 +46,7 @@ class Patient(Base):
     insurance_company: Mapped[str]
 
     password: Mapped[str]
+
+    hospitalizations = relationship("Hospitalization", back_populates="patients")
+
 

@@ -15,3 +15,13 @@ class HospitalizationDAO(BaseDAO):
         query = select(cls.model).filter_by(id=hosp_id)
         result = await session.execute(query)
         return result.scalar_one_or_none()
+
+    @classmethod
+    async def find_patient_by_hosp_id(cls, session: AsyncSession, hosp_id: uuid.UUID,  options=None):
+        query = select(Hospitalization).filter_by(**{"id": hosp_id})
+        if options:
+            query = query.options(*options)
+        rez = await session.execute(query)
+        otv = rez.scalar_one_or_none()
+        print(otv)
+        return otv

@@ -2,7 +2,7 @@ import uuid
 from datetime import date
 
 from sqlalchemy import Integer, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
 
@@ -25,3 +25,6 @@ class Hospitalization(Base):
     refusal_patient: Mapped[bool] = mapped_column(nullable=True, default=False)
     refusal_doctor: Mapped[bool] = mapped_column(nullable=True, default=False)
     cancel_reason: Mapped[str] = mapped_column(nullable=True)
+
+    patients = relationship("Patient", back_populates="hospitalizations")
+    doctors = relationship("Doctor", back_populates="hospitalizations")
