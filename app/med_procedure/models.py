@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import Integer, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
 
@@ -19,10 +19,16 @@ class MedProcedure(Base):
     result: Mapped[str]
     recommendations: Mapped[str]
 
+    patients = relationship("Patient", back_populates="medprocedures")
+    doctors = relationship("Doctor", back_populates="medprocedures")
+    cabinet = relationship("Cabinet", back_populates="medprocedures")
+
 
 class Cabinet(Base):
     number_cabinet: Mapped[int]
     name: Mapped[int]
+
+    medprocedures = relationship("MedProcedure", back_populates="cabinet")
 
 
 

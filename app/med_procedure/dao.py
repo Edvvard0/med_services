@@ -1,7 +1,19 @@
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.dao.base import BaseDAO
 from app.med_procedure.models import MedProcedure
 
 
 class MedProcedureDAO(BaseDAO):
     model = MedProcedure
+
+    @classmethod
+    async def find_med_procedures(cls, session: AsyncSession, med_procedures: int, options=None):
+        query = select(MedProcedure).filter_by(**{"id": med_procedures})
+        if options:
+            query = query.options(*options)
+        rez = await session.execute(query)
+        otv = rez.scalar_one_or_none()
+        return otv
 

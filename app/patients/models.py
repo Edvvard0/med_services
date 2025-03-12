@@ -48,5 +48,5 @@ class Patient(Base):
     password: Mapped[str]
 
     hospitalizations = relationship("Hospitalization", back_populates="patients")
-
+    medprocedures = relationship("MedProcedure", back_populates="patients")
 
