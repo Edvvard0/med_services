@@ -1,10 +1,11 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from starlette import status
 from starlette.responses import Response
 
 from app.database import SessionDep, async_session_maker
 from app.doctors.auth import get_password_hash, authenticate_user, create_access_token
 from app.doctors.dao import DoctorDAO
+from app.doctors.dependencies import get_current_user
 from app.doctors.schemas import SDoctor, SDoctorAdd, SDoctorAuth
 from app.exception import IncorrectEmailOrPasswordException
 
@@ -45,6 +46,11 @@ async def login_doctor(response: Response, doctor_data: SDoctorAuth, session: Se
     access_token = create_access_token({'sub': str(patient.id)})
     response.set_cookie("access_token_doc", access_token, httponly=True)
     return access_token
+
+
+@router.get("/me")
+async def get_me_doc(doctor=Depends(get_current_user)) -> SDoctor:
+    return doctor
 
 
 @router.get("/{doctor_id}")
