@@ -17,3 +17,12 @@ class MedProcedureDAO(BaseDAO):
         otv = rez.scalar_one_or_none()
         return otv
 
+    @classmethod
+    async def find_all_med_procedures(cls, session: AsyncSession, options=None):
+        query = select(MedProcedure)
+        if options:
+            query = query.options(*options)
+        rez = await session.execute(query)
+        otv = rez.scalars().all()
+        return otv
+

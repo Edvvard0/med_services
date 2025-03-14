@@ -30,5 +30,3 @@ class Cabinet(Base):
 
     medprocedures = relationship("MedProcedure", back_populates="cabinet")
 
-
-

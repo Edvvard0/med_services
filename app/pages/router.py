@@ -5,6 +5,7 @@ from starlette.templating import Jinja2Templates
 
 from app.doctors.router import get_me_doc
 from app.hospitalization.router import get_lst_hosp_full_info, get_patients_hosp
+from app.med_procedure.router import get_all_med_procedure, get_med_procedures
 from app.patients.router import get_me, get_patient, all_patients
 
 router = APIRouter(prefix='/pages',
@@ -86,3 +87,23 @@ async def hospitalizations_page(request: Request, hosp=Depends(get_patients_hosp
     return template.TemplateResponse(name='current_hosp.html',
                                      context={'request': request,
                                               "hospitalization": hosp})
+
+
+@router.get("/med_procedures")
+async def med_procedures_page(request: Request,
+                              med_procedures=Depends(get_all_med_procedure)) -> HTMLResponse:
+    return template.TemplateResponse(
+        name="lst_med_procedure.html",
+        context={'request': request,
+                 "med_procedures": med_procedures}
+    )
+
+
+@router.get("/med_procedures/{med_procedures_id}")
+async def med_procedures_page(request: Request,
+                              med_procedure=Depends(get_med_procedures)) -> HTMLResponse:
+    return template.TemplateResponse(
+        name="current_med_procedure.html",
+        context={'request': request,
+                 "med_procedure": med_procedure}
+    )
