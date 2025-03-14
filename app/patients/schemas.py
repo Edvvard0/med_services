@@ -18,7 +18,6 @@ class SPatientAdd(BaseModel):
     phone_number: str
     email: EmailStr
 
-    photo_url: str
     date_issue: date
     date_last_request: datetime
     date_next_visit: datetime

@@ -34,7 +34,9 @@ class Patient(Base):
     med_card_id: Mapped[uuid.UUID] = mapped_column(
         default=uuid.uuid4,
     )
-    photo_url: Mapped[str]
+    photo_url: Mapped[str] = mapped_column(nullable=True)
+    qr_code_url: Mapped[str] = mapped_column(nullable=True)
+
     date_issue: Mapped[date]
     date_last_request: Mapped[datetime]
     date_next_visit: Mapped[datetime]

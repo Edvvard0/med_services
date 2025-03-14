@@ -13,21 +13,23 @@ from fastapi import HTTPException
 from app.patients.schemas import SPatientAdd
 
 
-async def generate_qr_code(data: str) -> BytesIO:
+async def generate_qr_code(patient_id: str) -> BytesIO:
     qr = qrcode.QRCode(
         version=1,
         error_correction=qrcode.constants.ERROR_CORRECT_L,
         box_size=10,
         border=4,
     )
-    qr.add_data(data)
+    qr.add_data(patient_id)
     qr.make(fit=True)
 
     img = qr.make_image(fill_color="black", back_color="white")
-    buffer = BytesIO()
-    img.save(buffer, format="JPEG")
-    buffer.seek(0)
-    return buffer
+    # buffer = BytesIO()
+    # img.save(buffer, format="JPEG")
+    # buffer.seek(0)
+    path: str = f"data/qr_code/qr_{patient_id}.jpg"
+    img.save(path)
+    return path
 
 
 async def recognize_qr_code(file_content: bytes) -> str:

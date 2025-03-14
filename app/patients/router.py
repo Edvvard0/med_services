@@ -56,19 +56,20 @@ async def get_me(patient=Depends(get_current_user)) -> SPatient:
     return patient
 
 
-@router.post("/upload_photo")
-async def upload_photo(uploaded_file: UploadFile):
+@router.post("/upload_photo/{patient_id}")
+async def upload_photo(uploaded_file: UploadFile, patient_id: int):
     '''  Добавить сохранение в s3 хранилище'''
-    # file = uploaded_file.file
-    # file_name = "data/photo.jpg"
-    # with open(file_name, "wb") as f:
-    #     f.write(file.read())
+    file = uploaded_file.file
+    file_name = f"data/photo/ph_{patient_id}.jpg"
+    with open(file_name, "wb") as f:
+        f.write(file.read())
 
 
 @router.get("/qr_code/{patient_id}")
 async def get_qr_code_patient(patient_id: int):
-    qr_buffer = await generate_qr_code(str(patient_id))
-    return StreamingResponse(qr_buffer, media_type="image/jpeg")
+    qr_url = await generate_qr_code(str(patient_id))
+    # return StreamingResponse(qr_buffer, media_type="image/jpeg")
+    return FileResponse(path=qr_url, filename='qr_code.jpg', media_type="image/jpeg")
 
 
 @router.post("/qr_code")
