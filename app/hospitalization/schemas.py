@@ -24,3 +24,15 @@ class SHospitalization(BaseModel):
 class SHospitalizationFull(SHospitalization):
     patients: SPatient
     doctors: SDoctor
+
+
+class SHospitalizationAdd(BaseModel):
+    department: str
+    purpose: str
+    start_date: date
+    end_date: date
+    is_paid: bool
+
+    refusal_patient: bool | None
+    refusal_doctor: bool | None
+    cancel_reason: str | None

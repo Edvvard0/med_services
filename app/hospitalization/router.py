@@ -1,12 +1,13 @@
 import uuid
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import selectinload
 
 from app.database import SessionDep
+from app.doctors.dependencies import get_current_user
 from app.hospitalization.dao import HospitalizationDAO
 from app.hospitalization.models import Hospitalization
-from app.hospitalization.schemas import SHospitalization, SHospitalizationFull
+from app.hospitalization.schemas import SHospitalization, SHospitalizationFull, SHospitalizationAdd
 
 router = APIRouter(
     prefix="/hospitalizations",
@@ -20,9 +21,18 @@ async def get_hospitalizations(session: SessionDep) -> list[SHospitalization]:
     return hosp
 
 
-@router.post("/")
-async def add_hospitalization(session: SessionDep, hosp: SHospitalization):
-    await HospitalizationDAO.add(session, **hosp.model_dump())
+@router.post("/patient/{patient_id}")
+async def add_hospitalization(
+        session: SessionDep,
+        hosp: SHospitalizationAdd,
+        patient_id: int,
+        doctor=Depends(get_current_user)
+):
+    data = hosp.model_dump()
+    data["patient_id"] = patient_id
+    data["doctor_id"] = doctor.id
+
+    await HospitalizationDAO.add(session, **data)
     return {"message": "Госпитализация успешно добавлена"}
 
 

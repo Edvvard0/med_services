@@ -90,6 +90,16 @@ async def hospitalizations_page(request: Request, lst_hosp=Depends(get_lst_hosp_
                                               "hospitalizations": lst_hosp})
 
 
+@router.get("/hospitalizations/add/{patient_id}")
+async def add_hospitalizations_page(
+        request: Request,
+        patient_id: int,
+        ) -> HTMLResponse:
+    return template.TemplateResponse(
+        name="add_hospitalizations.html",
+        context={'request': request})
+
+
 @router.get("/hospitalizations/{hosp_id}")
 async def hospitalizations_page(request: Request, hosp=Depends(get_patients_hosp)) -> HTMLResponse:
     return template.TemplateResponse(name='current_hosp.html',
@@ -108,7 +118,11 @@ async def med_procedures_page(request: Request,
 
 
 @router.get("/med_procedures/add/{patient_id}")
-async def med_procedures_page(request: Request, patient_id: int, cabinets=Depends(get_all_cabinets) ) -> HTMLResponse:
+async def med_procedures_page(
+        request: Request,
+        patient_id: int,
+        cabinets=Depends(get_all_cabinets)
+        ) -> HTMLResponse:
     return template.TemplateResponse(
         name="add_med_procedure.html",
         context={'request': request,
