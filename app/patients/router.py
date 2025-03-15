@@ -1,13 +1,10 @@
-import uuid
-
 from fastapi import APIRouter, UploadFile, Depends, HTTPException, Body
 
-from pydantic import EmailStr
 from starlette import status
-from starlette.responses import FileResponse, StreamingResponse, Response
+from starlette.responses import FileResponse, Response
 
-from app.database import SessionDep, get_session, async_session_maker
-from app.exception import UserAlreadyExistsException, IncorrectEmailOrPasswordException, UserNotFindException
+from app.database import SessionDep, async_session_maker
+from app.exception import IncorrectEmailOrPasswordException, UserNotFindException
 from app.patients.auth import get_password_hash, authenticate_user, create_access_token
 from app.patients.dao import PatientDAO
 from app.patients.dependencies import get_current_user
@@ -21,7 +18,7 @@ router = APIRouter(
 
 
 @router.post("/")
-async def add_patient(session: SessionDep, data_patient: SPatientAdd):
+async def add_patient(session: SessionDep, data_patient: SPatientAdd) -> SPatient:
     user = await PatientDAO.find_one_or_none(session=session, email=data_patient.email)
     if user:
         raise HTTPException(
@@ -33,9 +30,8 @@ async def add_patient(session: SessionDep, data_patient: SPatientAdd):
     data_patient.password = hashed_password
 
     async with async_session_maker() as session:
-        await PatientDAO.add(session, **data_patient.model_dump())
-
-    return {"message": "Пользователь успешно добавлен"}
+        patient = await PatientDAO.add(session, **data_patient.model_dump())
+    return patient
 
 
 @router.get("/")

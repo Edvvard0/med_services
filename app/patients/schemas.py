@@ -2,7 +2,7 @@ import uuid
 from datetime import date, datetime
 from uuid import UUID
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict
 
 from app.patients.models import CorrectGender
 
@@ -28,6 +28,8 @@ class SPatientAdd(BaseModel):
     insurance_company: str
     password: str
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class SPatient(BaseModel):
     id: int
@@ -52,7 +54,11 @@ class SPatient(BaseModel):
 
     insurance_company: str
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class SPatientAuth(BaseModel):
     email: EmailStr
     password: str
+
+    model_config = ConfigDict(from_attributes=True)
