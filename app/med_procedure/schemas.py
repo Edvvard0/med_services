@@ -25,8 +25,6 @@ class SMedProcedure(BaseModel):
 
 
 class SMedProcedureAdd(BaseModel):
-    patient_id: int
-    doctor_id: int
     cabinet_id: int
 
     datetime_measures: datetime

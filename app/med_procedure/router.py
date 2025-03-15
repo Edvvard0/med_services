@@ -1,10 +1,11 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import selectinload
 
 from app.database import SessionDep
+from app.doctors.dependencies import get_current_user
 from app.med_procedure.dao import MedProcedureDAO, CabinetDAO
 from app.med_procedure.models import MedProcedure
-from app.med_procedure.schemas import SCabinet
+from app.med_procedure.schemas import SCabinet, SMedProcedureAdd
 
 router = APIRouter(
     prefix="/med_procedure",
@@ -20,6 +21,22 @@ async def get_all_med_procedure(session: SessionDep):
                  selectinload(MedProcedure.doctors),
                  selectinload(MedProcedure.cabinet)])
     return rez
+
+
+@router.post("/patient/{patient_id}")
+async def add_med_procedure(
+        session: SessionDep,
+        patient_id: int,
+        med_procedure_data: SMedProcedureAdd,
+        doctor=Depends(get_current_user)):
+    data = med_procedure_data.model_dump()
+    data["patient_id"] = patient_id
+    data["doctor_id"] = doctor.id
+    data["type_procedure"] = med_procedure_data.type_procedure.value
+
+    await MedProcedureDAO.add(session, **data)
+    return {"message": "МедПроцедура успешно добавлена"}
+
 
 
 @router.get("/cabinets")

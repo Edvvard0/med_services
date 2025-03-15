@@ -36,15 +36,14 @@ class BaseDAO:
         #     msg += " Exp: Cannot add"
         #     logger.error(msg, extra=values, exc_info=True)
 
-        async with session.begin():
-            new_instance = cls.model(**values)
-            session.add(new_instance)
-            try:
-                await session.commit()
-            except SQLAlchemyError as e:
-                await session.rollback()
-                raise e
-            return new_instance
+        new_instance = cls.model(**values)
+        session.add(new_instance)
+        try:
+            await session.commit()
+        except SQLAlchemyError as e:
+            await session.rollback()
+            raise e
+        return new_instance
 
     @classmethod
     async def find_one_or_none_by_id(cls, session: AsyncSession, model_id: int):
