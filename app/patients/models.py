@@ -43,7 +43,6 @@ class Patient(Base):
     number_insurance_policy: Mapped[str]
     date_expiration: Mapped[date]
     diagnosis: Mapped[str]
-    disease_history: Mapped[str]
 
     insurance_company: Mapped[str]
 

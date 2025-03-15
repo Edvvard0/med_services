@@ -45,6 +45,14 @@ async def patients_page(request: Request, patients=Depends(all_patients)) -> HTM
     )
 
 
+@router.get("/patients/add")
+async def patients_add_page(request: Request) -> HTMLResponse:
+    return template.TemplateResponse(
+        name="add_patient.html",
+        context={'request': request}
+    )
+
+
 @router.get("/patients/{patient_id}")
 async def current_patient_page(request: Request, patient=Depends(get_patient)) -> HTMLResponse:
     return template.TemplateResponse(
@@ -107,3 +115,5 @@ async def med_procedures_page(request: Request,
         context={'request': request,
                  "med_procedure": med_procedure}
     )
+
+

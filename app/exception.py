@@ -43,3 +43,8 @@ class NoTokenException(BookingException):
     detail = "Нет токена"
 
 
+class UserNotFindException(BookingException):
+    status_code = status.HTTP_404_NOT_FOUND
+    detail = "Пользователь не найден"
+
+

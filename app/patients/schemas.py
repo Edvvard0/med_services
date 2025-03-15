@@ -24,7 +24,6 @@ class SPatientAdd(BaseModel):
     number_insurance_policy: str
     date_expiration: date
     diagnosis: str
-    disease_history: str
 
     insurance_company: str
     password: str
@@ -47,7 +46,9 @@ class SPatient(BaseModel):
     number_insurance_policy: str
     date_expiration: date
     diagnosis: str
-    disease_history: str
+
+    photo_url: str | None
+    qr_code_url: str | None
 
     insurance_company: str
 

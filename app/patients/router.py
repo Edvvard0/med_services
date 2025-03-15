@@ -1,11 +1,13 @@
-from fastapi import APIRouter, UploadFile, Depends, HTTPException
+import uuid
+
+from fastapi import APIRouter, UploadFile, Depends, HTTPException, Body
 
 from pydantic import EmailStr
 from starlette import status
 from starlette.responses import FileResponse, StreamingResponse, Response
 
 from app.database import SessionDep, get_session, async_session_maker
-from app.exception import UserAlreadyExistsException, IncorrectEmailOrPasswordException
+from app.exception import UserAlreadyExistsException, IncorrectEmailOrPasswordException, UserNotFindException
 from app.patients.auth import get_password_hash, authenticate_user, create_access_token
 from app.patients.dao import PatientDAO
 from app.patients.dependencies import get_current_user
@@ -19,7 +21,7 @@ router = APIRouter(
 
 
 @router.post("/")
-async def add_patient(data_patient: SPatientAdd, session: SessionDep):
+async def add_patient(session: SessionDep, data_patient: SPatientAdd):
     user = await PatientDAO.find_one_or_none(session=session, email=data_patient.email)
     if user:
         raise HTTPException(
@@ -32,6 +34,7 @@ async def add_patient(data_patient: SPatientAdd, session: SessionDep):
 
     async with async_session_maker() as session:
         await PatientDAO.add(session, **data_patient.model_dump())
+
     return {"message": "Пользователь успешно добавлен"}
 
 
@@ -60,9 +63,10 @@ async def get_me(patient=Depends(get_current_user)) -> SPatient:
 async def upload_photo(uploaded_file: UploadFile, patient_id: int):
     '''  Добавить сохранение в s3 хранилище'''
     file = uploaded_file.file
-    file_name = f"data/photo/ph_{patient_id}.jpg"
+    file_name = f"data/photo/ph_{str(patient_id)}.jpg"
     with open(file_name, "wb") as f:
         f.write(file.read())
+    return file_name
 
 
 @router.get("/qr_code/{patient_id}")
@@ -107,4 +111,6 @@ async def contract(patient_id: int, session: SessionDep):
 @router.get("/{patient_id}")
 async def get_patient(patient_id: int, session: SessionDep) -> SPatient:
     patient = await PatientDAO.find_one_or_none_by_id(session=session, model_id=patient_id)
+    if not patient:
+        raise UserNotFindException
     return patient
