@@ -2,8 +2,9 @@ from fastapi import APIRouter
 from sqlalchemy.orm import selectinload
 
 from app.database import SessionDep
-from app.med_procedure.dao import MedProcedureDAO
+from app.med_procedure.dao import MedProcedureDAO, CabinetDAO
 from app.med_procedure.models import MedProcedure
+from app.med_procedure.schemas import SCabinet
 
 router = APIRouter(
     prefix="/med_procedure",
@@ -19,6 +20,12 @@ async def get_all_med_procedure(session: SessionDep):
                  selectinload(MedProcedure.doctors),
                  selectinload(MedProcedure.cabinet)])
     return rez
+
+
+@router.get("/cabinets")
+async def get_all_cabinets(session: SessionDep) -> list[SCabinet]:
+    cabinets = await CabinetDAO.find_all(session)
+    return cabinets
 
 
 @router.get("/{med_procedures_id}")

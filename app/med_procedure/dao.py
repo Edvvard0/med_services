@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.dao.base import BaseDAO
-from app.med_procedure.models import MedProcedure
+from app.med_procedure.models import MedProcedure, Cabinet
 
 
 class MedProcedureDAO(BaseDAO):
@@ -25,4 +25,8 @@ class MedProcedureDAO(BaseDAO):
         rez = await session.execute(query)
         otv = rez.scalars().all()
         return otv
+
+
+class CabinetDAO(BaseDAO):
+    model = Cabinet
 

@@ -22,3 +22,21 @@ class SMedProcedure(BaseModel):
     name_measures: str
     result: str
     recommendations: str
+
+
+class SMedProcedureAdd(BaseModel):
+    patient_id: int
+    doctor_id: int
+    cabinet_id: int
+
+    datetime_measures: datetime
+    type_procedure: TypeProcedure
+    name_measures: str
+    result: str
+    recommendations: str
+
+
+class SCabinet(BaseModel):
+    id: int
+    number_cabinet: int
+    name: str
