@@ -38,7 +38,6 @@ async def add_med_procedure(
     return {"message": "МедПроцедура успешно добавлена"}
 
 
-
 @router.get("/cabinets")
 async def get_all_cabinets(session: SessionDep) -> list[SCabinet]:
     cabinets = await CabinetDAO.find_all(session)
