@@ -4,7 +4,6 @@ from uuid import UUID
 
 from pydantic import BaseModel, EmailStr, ConfigDict
 
-from app.med_procedure.schemas import SMedProcedure
 from app.patients.models import CorrectGender
 
 
@@ -82,7 +81,3 @@ class SHosp(BaseModel):
 
 class SPatientHosp(SPatient):
     hospitalizations: list[SHosp]
-
-
-class SPatientMedProcedure(SPatient):
-    medprocedures: list[SMedProcedure]

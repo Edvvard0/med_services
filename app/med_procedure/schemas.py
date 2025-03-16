@@ -1,7 +1,10 @@
 from datetime import datetime
 from enum import Enum
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
+
+from app.doctors.schemas import SDoctor
+from app.patients.schemas import SPatient
 
 
 class TypeProcedure(Enum):
@@ -23,6 +26,8 @@ class SMedProcedure(BaseModel):
     result: str
     recommendations: str
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class SMedProcedureAdd(BaseModel):
     cabinet_id: int
@@ -38,3 +43,10 @@ class SCabinet(BaseModel):
     id: int
     number_cabinet: int
     name: str
+
+
+class SMedProcedureFull(SMedProcedure):
+    patients: SPatient
+    doctors: SDoctor
+
+    model_config = ConfigDict(from_attributes=True)

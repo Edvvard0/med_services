@@ -5,7 +5,7 @@ from app.database import SessionDep
 from app.doctors.dependencies import get_current_user
 from app.med_procedure.dao import MedProcedureDAO, CabinetDAO
 from app.med_procedure.models import MedProcedure
-from app.med_procedure.schemas import SCabinet, SMedProcedureAdd
+from app.med_procedure.schemas import SCabinet, SMedProcedureAdd, SMedProcedureFull
 
 router = APIRouter(
     prefix="/med_procedure",
@@ -17,6 +17,17 @@ router = APIRouter(
 async def get_all_med_procedure(session: SessionDep):
     rez = await MedProcedureDAO.find_all_med_procedures(
         session,
+        options=[selectinload(MedProcedure.patients),
+                 selectinload(MedProcedure.doctors),
+                 selectinload(MedProcedure.cabinet)])
+    return rez
+
+
+@router.get("/patient/{patient_id}")
+async def get_all_med_procedure_by_current_patient(session: SessionDep, patient_id: int) -> list[SMedProcedureFull]:
+    rez = await MedProcedureDAO.find_all_med_procedures_current_patient(
+        session,
+        patient_id=patient_id,
         options=[selectinload(MedProcedure.patients),
                  selectinload(MedProcedure.doctors),
                  selectinload(MedProcedure.cabinet)])

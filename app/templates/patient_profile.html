@@ -98,8 +98,8 @@
 
     <!-- Кнопки -->
     <div class="buttons">
-        <button onclick="window.location.href='/pages/patients/treatment'">Лечебно-профилактические мероприятия</button>
-        <button onclick="window.location.href='/pages/patients/hospitalization'">Госпитализация</button>
+        <button onclick="window.location.href='/pages/med_procedures/patient/{{ patient.id }}'">Лечебно-профилактические мероприятия</button>
+        <button onclick="window.location.href='/pages/hospitalizations/patient/{{ patient.id }}'">Госпитализация</button>
     </div>
 </div>
 {% endblock %}

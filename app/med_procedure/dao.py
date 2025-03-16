@@ -26,6 +26,15 @@ class MedProcedureDAO(BaseDAO):
         otv = rez.scalars().all()
         return otv
 
+    @classmethod
+    async def find_all_med_procedures_current_patient(cls, session: AsyncSession, patient_id: int, options=None):
+        query = select(MedProcedure).filter_by(patient_id=patient_id)
+        if options:
+            query = query.options(*options)
+        rez = await session.execute(query)
+        otv = rez.scalars().all()
+        return otv
+
 
 class CabinetDAO(BaseDAO):
     model = Cabinet
