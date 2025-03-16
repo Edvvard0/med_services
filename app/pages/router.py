@@ -63,6 +63,16 @@ async def current_patient_page(request: Request, patient=Depends(get_patient)) -
     )
 
 
+@router.get("/doctor/patients/{patient_id}")
+async def current_patient_for_doctor_page(request: Request, patient=Depends(get_patient)) -> HTMLResponse:
+    return template.TemplateResponse(
+        name="patient_profile.html",
+        context={'request': request,
+                 'patient': patient,
+                 'role': 'doctor'}
+    )
+
+
 @router.get("/login/doctor")
 async def login_doctor_page(request: Request) -> HTMLResponse:
     return template.TemplateResponse(name='login.html',

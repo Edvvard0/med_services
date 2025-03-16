@@ -106,5 +106,14 @@
         <button onclick="window.location.href='/pages/med_procedures/patient/{{ patient.id }}'">Лечебно-профилактические мероприятия</button>
         <button onclick="window.location.href='/pages/hospitalizations/patient/{{ patient.id }}'">Госпитализация</button>
     </div>
+
+    {% if role == "doctor" %}
+    <br>
+    <div class="buttons">
+        <button onclick="window.location.href='/pages/med_procedures/add/{{ patient.id }}'">
+            Добавить лечебно-профилактическое мероприятие</button>
+        <button onclick="window.location.href='/pages/hospitalizations/add/{{ patient.id }}'">Добавить госпитализацию</button>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
