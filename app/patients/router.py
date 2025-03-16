@@ -1,4 +1,5 @@
 from fastapi import APIRouter, UploadFile, Depends, HTTPException, Body
+from sqlalchemy.orm import selectinload
 
 from starlette import status
 from starlette.responses import FileResponse, Response
@@ -8,7 +9,8 @@ from app.exception import IncorrectEmailOrPasswordException, UserNotFindExceptio
 from app.patients.auth import get_password_hash, authenticate_user, create_access_token
 from app.patients.dao import PatientDAO
 from app.patients.dependencies import get_current_user
-from app.patients.schemas import SPatientAdd, SPatient, SPatientAuth
+from app.patients.models import Patient
+from app.patients.schemas import SPatientAdd, SPatient, SPatientAuth, SPatientHosp
 from app.patients.utils import recognize_qr_code, generate_qr_code, generate_consent, generate_contract
 
 router = APIRouter(
@@ -53,6 +55,15 @@ async def login_user(response: Response, patient_data: SPatientAuth, session: Se
 @router.get("/me")
 async def get_me(patient=Depends(get_current_user)) -> SPatient:
     return patient
+
+
+@router.get("/hospitalizations/{patient_id}")
+async def get_all_hosp_by_patient_id(session: SessionDep, patient_id: int) -> SPatientHosp:
+    hosp = await PatientDAO.find_one_or_none_by_id(
+        session,
+        patient_id,
+        options=[selectinload(Patient.hospitalizations)])
+    return hosp
 
 
 @router.post("/upload_photo/{patient_id}")

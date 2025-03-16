@@ -55,7 +55,6 @@
         <label for="password">Пароль:</label>
         <input type="password" id="password" name="password" required>
         {% if role == "patient" %}
-            <p>Пациент</p>
             <button type="submit" id="login-button" class="submit-button" onclick="loginFunction(event)">Войти</button>
         {% elif role == "doctor" %}
             <button type="submit" id="login-button" class="submit-button" onclick="loginFunctionDoc(event)">Войти</button>

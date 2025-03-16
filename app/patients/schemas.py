@@ -62,3 +62,22 @@ class SPatientAuth(BaseModel):
     password: str
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class SHosp(BaseModel):
+    patient_id: int
+    doctor_id: int
+
+    department: str
+    purpose: str
+    start_date: date
+    end_date: date
+    is_paid: bool
+
+    refusal_patient: bool | None
+    refusal_doctor: bool | None
+    cancel_reason: str | None
+
+
+class SPatientHosp(SPatient):
+    hospitalizations: list[SHosp]

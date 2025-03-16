@@ -1,3 +1,4 @@
+from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -20,3 +21,12 @@ class PatientDAO(BaseDAO):
             await session.rollback()
             raise e
         return new_instance
+
+    @classmethod
+    async def find_one_or_none_by_id(cls, session: AsyncSession, patient_id: int, options=None):
+        query = select(cls.model).filter_by(id=patient_id)
+        if options:
+            query = query.options(*options)
+
+        result = await session.execute(query)
+        return result.scalar_one_or_none()

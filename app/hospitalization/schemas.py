@@ -16,9 +16,9 @@ class SHospitalization(BaseModel):
     end_date: date
     is_paid: bool
 
-    refusal_patient: bool
-    refusal_doctor: bool
-    cancel_reason: str
+    refusal_patient: bool | None
+    refusal_doctor: bool | None
+    cancel_reason: str | None
 
 
 class SHospitalizationFull(SHospitalization):
