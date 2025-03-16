@@ -3,6 +3,8 @@ from starlette.requests import Request
 from starlette.responses import HTMLResponse
 from starlette.templating import Jinja2Templates
 
+from app.database import SessionDep
+from app.doctors.dependencies import get_current_user, get_current_user_optional
 from app.doctors.router import get_me_doc
 from app.hospitalization.router import get_lst_hosp_full_info, get_patients_hosp
 from app.med_procedure.router import get_all_med_procedure, get_med_procedures, add_med_procedure, get_all_cabinets, \
@@ -55,21 +57,19 @@ async def patients_add_page(request: Request) -> HTMLResponse:
 
 
 @router.get("/patients/{patient_id}")
-async def current_patient_page(request: Request, patient=Depends(get_patient)) -> HTMLResponse:
-    return template.TemplateResponse(
-        name="patient_profile.html",
-        context={'request': request,
-                 'patient': patient}
-    )
+async def current_patient_page(request: Request,
+                               doctor=Depends(get_current_user_optional),
+                               patient=Depends(get_patient)) -> HTMLResponse:
+    if doctor:
+        role = "doctor"
+    else:
+        role = None
 
-
-@router.get("/doctor/patients/{patient_id}")
-async def current_patient_for_doctor_page(request: Request, patient=Depends(get_patient)) -> HTMLResponse:
     return template.TemplateResponse(
         name="patient_profile.html",
         context={'request': request,
                  'patient': patient,
-                 'role': 'doctor'}
+                 'role': role}
     )
 
 

@@ -134,7 +134,7 @@
             }
 
             alert('Медицинская процедура успешно добавлена!');
-            window.location.href = `/pages/doctor/patients/${patientId}`; // Перенаправление
+            window.location.href = `/pages/patients/${patientId}`; // Перенаправление
         } catch (error) {
             console.error('Ошибка:', error);
             alert('Произошла ошибка: ' + error.message);
