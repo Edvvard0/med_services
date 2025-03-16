@@ -167,11 +167,9 @@
                 },
                 body: JSON.stringify(patientData)
             });
-            alert("1");
 
             if (!response.ok) {
                 const errorData = await response.json();
-                alert("2");
                 throw new Error(errorData.detail || "Ошибка при добавлении пациента");
             }
 
@@ -200,11 +198,8 @@
                     throw new Error(photoErrorData.detail || "Ошибка при загрузке фото");
                 }
 
-                alert(11);
-
                 if (!qrResponse.ok) {
                 const photoErrorData = await photoResponse.json();
-                alert(22);
                 throw new Error(photoErrorData.detail || "Ошибка при созаднии qr_cod");
                 }
             }

@@ -42,6 +42,14 @@ async def all_patients(session: SessionDep) -> list[SPatient]:
     return patients
 
 
+@router.get("/profile/{patient_id}")
+async def get_patient(patient_id: int, session: SessionDep) -> SPatient:
+    patient = await PatientDAO.find_one_or_none_by_id(session=session, model_id=patient_id)
+    if not patient:
+        raise UserNotFindException
+    return patient
+
+
 @router.post('/login')
 async def login_user(response: Response, patient_data: SPatientAuth, session: SessionDep):
     patient = await authenticate_user(patient_data.email, patient_data.password, session)
@@ -67,19 +75,29 @@ async def get_all_hosp_by_patient_id(session: SessionDep, patient_id: int) -> SP
 
 
 @router.post("/upload_photo/{patient_id}")
-async def upload_photo(uploaded_file: UploadFile, patient_id: int):
+async def upload_photo(
+        uploaded_file: UploadFile,
+        patient_id: int,
+        session: SessionDep,
+        patient=Depends(get_patient)
+        ):
     '''  Добавить сохранение в s3 хранилище'''
     file = uploaded_file.file
     file_name = f"data/photo/ph_{str(patient_id)}.jpg"
     with open(file_name, "wb") as f:
         f.write(file.read())
+
+    patient.photo_url = file_name
+    await session.commit()
     return file_name
 
 
 @router.get("/qr_code/{patient_id}")
-async def get_qr_code_patient(patient_id: int):
+async def get_qr_code_patient(patient_id: int, session: SessionDep, patient=Depends(get_patient)):
     qr_url = await generate_qr_code(str(patient_id))
-    # return StreamingResponse(qr_buffer, media_type="image/jpeg")
+
+    patient.qr_code_url = qr_url
+    await session.commit()
     return FileResponse(path=qr_url, filename='qr_code.jpg', media_type="image/jpeg")
 
 
@@ -113,11 +131,3 @@ async def contract(patient_id: int, session: SessionDep):
         filename="Договор.docx",
         media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     )
-
-
-@router.get("/{patient_id}")
-async def get_patient(patient_id: int, session: SessionDep) -> SPatient:
-    patient = await PatientDAO.find_one_or_none_by_id(session=session, model_id=patient_id)
-    if not patient:
-        raise UserNotFindException
-    return patient

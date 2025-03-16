@@ -23,8 +23,8 @@ class PatientDAO(BaseDAO):
         return new_instance
 
     @classmethod
-    async def find_one_or_none_by_id(cls, session: AsyncSession, patient_id: int, options=None):
-        query = select(cls.model).filter_by(id=patient_id)
+    async def find_one_or_none_by_id(cls, session: AsyncSession, model_id: int, options=None):
+        query = select(cls.model).filter_by(id=model_id)
         if options:
             query = query.options(*options)
 
