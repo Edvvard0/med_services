@@ -176,7 +176,6 @@
 
             const result = await response.json();
             const patientId = result.id;  // Предполагаем, что сервер возвращает id в ответе
-            alert(patientId);
 
             // Второй запрос: загрузка фото, если оно есть
             const photoFile = formData.get("photo");
@@ -205,7 +204,7 @@
             }
 
             alert("Пациент успешно добавлен!");
-            window.location.href = "/pages/patients";  // Перенаправление после успеха
+            window.location.href = `/pages/patients/${patientId}`;  // Перенаправление после успеха
         } catch (error) {
             console.error("Ошибка:", error);
             alert("Произошла ошибка: " + error.message);
