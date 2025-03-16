@@ -83,7 +83,7 @@ async def upload_photo(
         ):
     '''  Добавить сохранение в s3 хранилище'''
     file = uploaded_file.file
-    file_name = f"data/photo/ph_{str(patient_id)}.jpg"
+    file_name = f"app/static/photo/ph_{str(patient_id)}.jpg"
     with open(file_name, "wb") as f:
         f.write(file.read())
 

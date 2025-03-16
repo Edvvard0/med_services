@@ -35,7 +35,7 @@
     }
     .medical-card img {
         max-width: 150px;
-        border-radius: 50%;
+        border-radius: 10%;
         margin: 10px 0;
     }
     .medical-card p {
@@ -90,9 +90,14 @@
         <p>Страховая компания: {{ patient.insurance_company if patient.insurance_company else 'Не указана' }}</p>
         <p>Диагноз: {{ patient.diagnosis if patient.diagnosis else 'Не установлен' }}</p>
         {% if patient.photo_url %}
-            <img src="{{ patient.photo_url }}" alt="Фото пациента">
+            <img src="{{ patient.photo_url[3:] }}" alt="Фото пациента">
         {% else %}
             <p>Фото отсутствует</p>
+        {% endif %}
+        {% if patient.photo_url %}
+            <img src="{{ patient.qr_code_url[3:] }}" alt="QR пациента">
+        {% else %}
+            <p>QR код отсутствует</p>
         {% endif %}
     </div>
 
