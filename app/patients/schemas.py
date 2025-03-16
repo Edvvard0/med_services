@@ -2,7 +2,7 @@ import uuid
 from datetime import date, datetime
 from uuid import UUID
 
-from pydantic import BaseModel, EmailStr, ConfigDict
+from pydantic import BaseModel, EmailStr, ConfigDict, field_validator
 
 from app.patients.models import CorrectGender
 
@@ -27,6 +27,13 @@ class SPatientAdd(BaseModel):
 
     insurance_company: str
     password: str
+
+    @field_validator("date_last_request", "date_next_visit", mode="before")
+    @classmethod
+    def remove_timezone(cls, v: datetime) -> datetime:
+        if isinstance(v, datetime) and v.tzinfo is not None:
+            return v.replace(tzinfo=None)
+        return v
 
     model_config = ConfigDict(from_attributes=True)
 
